@@ -1,0 +1,13 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#b7ff25"><title>Continuar para o destino — Gerino</title><link rel="stylesheet" href="/styles.css"></head><body class="redirect-body"><header class="topbar"><a class="brand" href="/"><span class="brand-mark">G</span>erino</a><a class="nav-cta" href="/">Encurtar um link <span>↗</span></a></header><main class="redirect-main"><div class="ad-banner redirect-ad"><span class="ad-label">PUBLICIDADE</span><div class="ad-symbol">G<span>+</span></div><div><small>ESPAÇO PUBLICITÁRIO</small><strong>Este espaço ajuda a manter o Gerino gratuito.</strong></div></div><section class="redirect-card"><div class="brand redirect-logo"><span class="brand-mark">G</span>erino</div><div class="eyebrow">SEU LINK ESTÁ QUASE PRONTO</div><h1>Continue para o destino</h1><p>Aguarde a contagem terminar e prossiga pelo botão abaixo.</p><div class="timer" aria-live="polite"><strong id="count">10</strong><span>segundos</span></div><button id="continue" disabled>🔒 Aguarde <span>→</span></button><small class="privacy-note">O destino será aberto em uma nova página; os anúncios são identificados como publicidade.</small><p id="redirect-error" class="error"></p></section><div class="ad-banner redirect-ad lower-ad"><span class="ad-label">PUBLICIDADE</span><div class="ad-symbol">G<span>+</span></div><div><small>ESPAÇO PUBLICITÁRIO</small><strong>Anúncios moderados. Experiência mais simples.</strong></div></div></main><footer><a class="brand footer-brand" href="/"><span class="brand-mark">G</span>erino</a><span>Encurta. Compartilha. Chega lá.</span><div class="footer-links"><a href="/report-abuse">Denunciar abuso</a><a href="/">Início</a></div></footer><script>
+(async()=>{
+ const code=location.pathname.split('/').filter(Boolean).pop();
+ const count=document.querySelector('#count'), btn=document.querySelector('#continue'), err=document.querySelector('#redirect-error');
+ let destination='';
+ try{const r=await fetch('/api/resolve/'+encodeURIComponent(code));const d=await r.json();if(!r.ok)throw Error(d.error||'Link indisponível');destination=d.destination;}
+ catch(e){err.textContent=e.message;count.textContent='—';return;}
+ let seconds=10;count.textContent=seconds;
+ const tick=()=>{seconds--;count.textContent=seconds;if(seconds<=0){clearInterval(timer);btn.disabled=false;btn.innerHTML='Continuar para o destino <span>→</span>'; }};
+ const timer=setInterval(tick,1000);
+ btn.addEventListener('click',async()=>{if(btn.disabled||!destination)return;btn.disabled=true;try{await fetch('/api/click/'+encodeURIComponent(code),{method:'POST'});}catch{}location.href=destination;});
+})();
+</script></body></html>
